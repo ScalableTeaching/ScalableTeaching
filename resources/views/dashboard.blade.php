@@ -21,7 +21,7 @@
                             All courses
                         </h1>
                     </div>
-                    <div class="pb-5 px-6">
+                    <div class="pb-5 px-6 w-full">
                         @foreach($courses as $course)
                             <ol>
                                 <li>
@@ -59,7 +59,7 @@
                         </h1>
                     </div>
                     @foreach($exercises as $exercise)
-                        <ol>
+                        <ol class="w-full">
                             <li class="py-0.5 mx-6 mt-5 bg-white dark:bg-gray-750 rounded-lg">
                                 <div class="m-4">
                                     <a href="{{ route('courses.tasks.show', [$exercise->course_id, $exercise]) }}"
@@ -82,7 +82,7 @@
                         </h1>
                     </div>
                     @foreach($exercises as $exercise)
-                        <ol>
+                        <ol class="w-full">
                             <li class="py-0.5 mx-6 mt-5 bg-white dark:bg-gray-750 rounded-lg">
                                 <div class="m-4">
                                     <a href="{{ route('courses.tasks.show', [$exercise->course_id, $exercise]) }}"
@@ -164,7 +164,7 @@
                         </h1>
                     </div>
                     @foreach($tasks as $task)
-                        <ol>
+                        <ol class="w-full">
                             <li class="py-0.5 m-6 mt-5 bg-white dark:bg-gray-750 rounded-lg">
                                 <div class="m-4">
                                     <a href="{{ route('courses.tasks.show', [$task->course_id, $task]) }}"
@@ -195,7 +195,7 @@
                         </h1>
                     </div>
                     @foreach($tasks as $task)
-                        <ol>
+                        <ol class="w-full">
                             <li class="py-0.5 m-6 mt-5 bg-white dark:bg-gray-750 rounded-lg">
                                 <div class="m-4">
                                     <a href="{{ route('courses.tasks.show', [$task->course_id, $task]) }}"
