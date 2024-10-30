@@ -8,6 +8,7 @@ use GraphQL\Client;
 use GraphQL\SchemaObject\RootProjectsArgumentsObject;
 use GraphQL\SchemaObject\RootQueryObject;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -31,6 +32,8 @@ class UserController extends Controller
         $validated = \request()->validate(['q' => ['required', 'min:3']]);
         $query = $validated['q'];
 
+        Log::debug("Searching for repositories with query: $query");
+
         $rootObject = new RootQueryObject();
         $rootObject->selectProjects((new RootProjectsArgumentsObject())
             ->setMembership(true)
@@ -44,8 +47,10 @@ class UserController extends Controller
             ->selectNamespace()->selectName()->selectFullName();
         $token = env('GITLAB_ACCESS_TOKEN');
         $client = new Client(env('GITLAB_URL') . '/api/graphql', ["Authorization" => 'Bearer ' . $token]);
-
         // @phpstan-ignore-next-line
-        return new \Illuminate\Support\Collection($client->runQuery($rootObject)->getResults()->data->projects->nodes);
+        $results = new \Illuminate\Support\Collection($client->runQuery($rootObject)->getResults()->data->projects->nodes);
+        Log::debug("Found " . $results->count() . " repositories");
+
+        return $results;
     }
 }
