@@ -2,7 +2,8 @@
 
 namespace App\Jobs\Course;
 
-use Domain\SourceControl\SourceControl;
+use Domain\GitLab\Definitions\GitLabUserAccessLevelEnum;
+use GrahamCampbell\GitLab\GitLabManager;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -18,7 +19,7 @@ class AddMemberToCourseGroup implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(public int $gitlabUser, public int $groupId, public int $level = 20) // 20 = reporter
+    public function __construct(public int $gitlabUser, public int $groupId, public ?int $level)
     {
         //
     }
@@ -28,8 +29,8 @@ class AddMemberToCourseGroup implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
-        app(SourceControl::class)->addUserToGroup($this->groupId, $this->gitlabUser, $this->level);
+        app(GitLabManager::class)->groups()->addMember($this->groupId, $this->gitlabUser, $this->level ?? GitLabUserAccessLevelEnum::REPORTER);
     }
 }

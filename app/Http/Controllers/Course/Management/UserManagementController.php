@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Course\Management;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\Course\AddMemberToCourseGroup;
 use App\Models\Course;
 use App\Models\CourseUser;
 use App\Models\Grade;
@@ -10,6 +11,9 @@ use App\Models\Group;
 use App\Models\GroupInvitation;
 use App\Models\GroupUser;
 use App\Models\User;
+use Domain\GitLab\Definitions\GitLabUserAccessLevelEnum;
+use Exception;
+use GrahamCampbell\GitLab\GitLabManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -39,6 +43,9 @@ class UserManagementController extends Controller
         return view('courses.manage.enrolled', compact('members', 'roles', 'roleRoute', 'kickRoute', 'activityRoute'));
     }
 
+    /**
+     * @throws Exception
+     */
     public function updateRole(Course $course): string
     {
         $validated = request()->validate([
@@ -47,6 +54,30 @@ class UserManagementController extends Controller
         ]);
 
         $course->members()->updateExistingPivot($validated['user'], ['role' => $validated['role']]);
+        $userToUpdate = User::find($validated['user']);
+        if ( ! $userToUpdate)
+        {
+            throw new Exception("User not found");
+        }
+
+        try
+        {
+            $gitlabManager = app(GitLabManager::class);
+            if ($validated['role'] == 'teacher')
+            {
+                AddMemberToCourseGroup::dispatch($userToUpdate->gitlab_id, $course->gitlab_group_id, GitLabUserAccessLevelEnum::OWNER->value);
+            }
+            else
+            {
+                // Remove from top-level group to avoid spying on other assignments.
+                $gitlabManager->groups()->removeMember($course->gitlab_group_id, $userToUpdate->gitlab_id);
+            }
+
+        } catch (Exception $e)
+        {
+            logger()->error("Failed to update user role ({$validated['role']}) in GitLab for user with id: {$userToUpdate->gitlab_id}", ['exception' => $e]);
+        }
+
 
         return "ok";
     }
