@@ -128,12 +128,12 @@ class WebhookController extends Controller
     }
 
     /**
-     * When deleting a branch, it triggers a push event that will have the after key set to pure 0's and checkout_sha = null.
+     * When deleting a branch, it triggers a push event that will have the after key set to pure 0's and checkout_sha = null and no commits.
      * Criteria taken from https://gitlab.com/gitlab-org/gitlab/-/issues/25305 and manual investigation.
      * @return bool whether the push event is a branch deletion
      */
     private function isBranchDeletionPush(): bool
     {
-        return request('checkout_sha') == null && intval(request('after')) == 0;
+        return request('checkout_sha') == null && intval(request('after')) == 0 && request('total_commits_count') == 0;
     }
 }
