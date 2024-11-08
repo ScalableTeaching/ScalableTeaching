@@ -50,9 +50,15 @@ class WebhookController extends Controller
         $succeedingBuilds = $builds->filter(fn($build) => $tracking->contains(strtolower($build['name'])) && $build['status'] == 'success');
         try
         {
+            $pipelineStatus = PipelineStatusEnum::tryFrom(request('object_attributes.status'));
+            if ($pipelineStatus == null)
+            {
+                return "SKIPPED"; // Skip pipeline events we don't care about.
+            }
+
             $pipeline->process(
                 startedAt: $startedAt,
-                status: PipelineStatusEnum::tryFrom(request('object_attributes.status')),
+                status: $pipelineStatus,
                 duration: request('object_attributes.duration') ?? null,
                 queueDuration: request('object_attributes.queued_duration') ?? null,
                 succeedingBuilds: $succeedingBuilds->pluck('name')->toArray()
