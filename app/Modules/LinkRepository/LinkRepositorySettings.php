@@ -27,12 +27,21 @@ class LinkRepositorySettings extends Settings
             return [];
         }
 
-        $gitlabManager = app(GitLabManager::class);
-        $project = $gitlabManager->projects()->show(explode("/", $this->repo)[4]);
+        try
+        {
+            $gitlabManager = app(GitLabManager::class);
+            $project = $gitlabManager->projects()->show(explode("/", $this->repo)[4]);
 
-        return [
-            'repoName' => $project['name_with_namespace'],
-        ];
+            return [
+                'repoName' => $project['name_with_namespace'],
+            ];
+        } catch (\Exception $ex)
+        {
+            return [
+                'repo' => null,
+            ];
+        }
+
     }
 
 

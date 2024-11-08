@@ -38,8 +38,7 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|Course whereMaxGroups($value)
  * @property-read \Illuminate\Support\Collection<int|string,int>|null $task_engagement
  * @property-read \Illuminate\Support\Collection<int|string,int>|null $enrolment_per_day
- * @property string $gitlab_group_id
- * @property int|null $gitlab_task_group_id
+ * @property int $gitlab_group_id
  */
 class Course extends Model
 {
