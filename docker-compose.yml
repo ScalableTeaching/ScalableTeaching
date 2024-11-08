@@ -12,6 +12,10 @@ services:
         command: mysqld
         volumes:
             -   dev-db:/var/lib/mysql
+    redis:
+        image: redis:latest
+        ports:
+            - "6379:6379"
     test-database:
         image: mysql:latest
         ports:

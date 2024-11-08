@@ -7,6 +7,7 @@ use App\Models\Course;
 use App\Models\Task;
 use App\Models\User;
 use Carbon\Carbon;
+use Domain\GitLab\Definitions\GitLabUserAccessLevelEnum;
 use Gitlab\Exception\ValidationFailedException;
 use GrahamCampbell\GitLab\GitLabManager;
 use Illuminate\Http\RedirectResponse;
@@ -116,12 +117,14 @@ class CourseController extends Controller
         }
 
         $groupResponse = json_decode($response->getBody()->getContents(), true);
+        /** @var Course $course */
         $course = Course::create([
             'name'            => $validated['course-name'],
             'gitlab_group_id' => $groupResponse['id'],
         ]);
 
         $course->members()->attach(auth()->id(), ['role' => 'teacher']);
+        AddMemberToCourseGroup::dispatch(auth()->user()->gitlab_id, $course->gitlab_group_id, GitLabUserAccessLevelEnum::OWNER->value);
 
         return redirect()->route("courses.index");
     }
@@ -190,8 +193,6 @@ class CourseController extends Controller
             return view('courses.enroll-dialog', compact('course'));
 
         $course->members()->attach(auth()->id(), ['role' => 'student']);
-        if($course->gitlab_task_group_id != null)
-            AddMemberToCourseGroup::dispatch(auth()->user()->gitlab_id, $course->gitlab_task_group_id, 20);
 
         return redirect()->route('courses.show', [$course->id]);
     }
