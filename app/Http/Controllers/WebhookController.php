@@ -98,6 +98,13 @@ class WebhookController extends Controller
         $project = Project::firstWhere('gitlab_project_id', request('project.id'));
         abort_if($project == null, 404);
 
+        if ($this->isBranchDeletionPush())
+        {
+            Log::info("Skipping branch deletion push event for project {$project->id} on branch " . request('ref'));
+
+            return "SKIPPED";
+        }
+
         $newProjectPush = [
             'before_sha' => request('before'),
             'after_sha'  => request('after'),
@@ -118,5 +125,15 @@ class WebhookController extends Controller
         $project->pushes()->create($newProjectPush);
 
         return "OK";
+    }
+
+    /**
+     * When deleting a branch, it triggers a push event that will have the after key set to pure 0's and checkout_sha = null.
+     * Criteria taken from https://gitlab.com/gitlab-org/gitlab/-/issues/25305 and manual investigation.
+     * @return bool whether the push event is a branch deletion
+     */
+    private function isBranchDeletionPush(): bool
+    {
+        return request('checkout_sha') == null && intval(request('after')) == 0;
     }
 }
