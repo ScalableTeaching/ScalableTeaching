@@ -50,9 +50,15 @@ class WebhookController extends Controller
         $succeedingBuilds = $builds->filter(fn($build) => $tracking->contains(strtolower($build['name'])) && $build['status'] == 'success');
         try
         {
+            $pipelineStatus = PipelineStatusEnum::tryFrom(request('object_attributes.status'));
+            if ($pipelineStatus == null)
+            {
+                return "SKIPPED"; // Skip pipeline events we don't care about.
+            }
+
             $pipeline->process(
                 startedAt: $startedAt,
-                status: PipelineStatusEnum::tryFrom(request('object_attributes.status')),
+                status: $pipelineStatus,
                 duration: request('object_attributes.duration') ?? null,
                 queueDuration: request('object_attributes.queued_duration') ?? null,
                 succeedingBuilds: $succeedingBuilds->pluck('name')->toArray()
@@ -92,6 +98,13 @@ class WebhookController extends Controller
         $project = Project::firstWhere('gitlab_project_id', request('project.id'));
         abort_if($project == null, 404);
 
+        if ($this->isBranchDeletionPush())
+        {
+            Log::info("Skipping branch deletion push event for project {$project->id} on branch " . request('ref'));
+
+            return "SKIPPED";
+        }
+
         $newProjectPush = [
             'before_sha' => request('before'),
             'after_sha'  => request('after'),
@@ -112,5 +125,15 @@ class WebhookController extends Controller
         $project->pushes()->create($newProjectPush);
 
         return "OK";
+    }
+
+    /**
+     * When deleting a branch, it triggers a push event that will have the after key set to pure 0's and checkout_sha = null and no commits.
+     * Criteria taken from https://gitlab.com/gitlab-org/gitlab/-/issues/25305 and manual investigation.
+     * @return bool whether the push event is a branch deletion
+     */
+    private function isBranchDeletionPush(): bool
+    {
+        return request('checkout_sha') == null && intval(request('after')) == 0 && request('total_commits_count') == 0;
     }
 }

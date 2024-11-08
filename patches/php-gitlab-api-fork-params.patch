@@ -1,0 +1,14 @@
+diff --git a/src/Api/Projects.php b/src/Api/Projects.php
+index 3f5d196..2bcd81d 100644
+--- a/src/Api/Projects.php
++++ b/src/Api/Projects.php
+@@ -1162,6 +1162,9 @@ class Projects extends AbstractApi
+         $resolver = new OptionsResolver();
+         $resolver->setDefined(['namespace', 'path', 'name']);
+
++        $resolver->setDefined('branches')
++          ->setAllowedTypes('branches', 'string');
++
+         $resolved = $resolver->resolve($parameters);
+
+         return $this->post($this->getProjectPath($project_id, 'fork'), $resolved);

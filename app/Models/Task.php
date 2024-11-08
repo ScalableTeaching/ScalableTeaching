@@ -689,10 +689,19 @@ class Task extends Model
     {
         Log::info("Forking project $sourceProjectId for $username");
 
+        try
+        {
+            $sourceProject = $manager->projects()->show($sourceProjectId);
+        } catch (Exception $e)
+        {
+            throw new Exception("Failed fetching source gitlab project with id $sourceProjectId - Error: " . $e->getMessage());
+        }
+
         $params = [
             'name'                   => $username,
             'path'                   => $username,
             'namespace'              => $groupId,
+            'branches'               => $sourceProject['default_branch'], // Only include the default branch.
         ];
 
         try

@@ -18,7 +18,7 @@ use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Laravel\postJson;
 use function Pest\testDirectory;
 
-//uses(RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 beforeEach(function() {
     /** @var Task $task */
