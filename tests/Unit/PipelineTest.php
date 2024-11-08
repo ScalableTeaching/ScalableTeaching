@@ -46,7 +46,7 @@ it('skips jobs that are successful but not tracked', function() {
     \Illuminate\Support\Facades\Log::spy();
 
     /** @var Project $project */
-    $project = Project::factory()->for(Task::factory()->for(Course::factory()))->create();
+    $project = Project::factory()->for(Task::factory(['starts_at' => now()->subSeconds(10), 'ends_at' => now()->addSeconds(10)])->for(Course::factory()))->create();
 
     $pipeline = new Pipeline();
     $pipeline->status = PipelineStatusEnum::Running;
@@ -70,7 +70,7 @@ it('does not skip jobs that are successful and tracked', function() {
         ['title' => 'test 11 Equals [10, 1]', 'points' => 50],
     ]);
     /** @var Project $project */
-    $project = Project::factory()->for(Task::factory(['sub_tasks' => $subTasks])->for(Course::factory()))->create();
+    $project = Project::factory()->for(Task::factory(['sub_tasks' => $subTasks, 'starts_at' => now()->subSeconds(10), 'ends_at' => now()->addSeconds(10)])->for(Course::factory()))->create();
 
     $pipeline = Pipeline::factory()->running()->for($project)->create();
 
