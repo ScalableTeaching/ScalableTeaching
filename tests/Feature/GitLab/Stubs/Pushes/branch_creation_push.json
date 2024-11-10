@@ -1,0 +1,24 @@
+{
+    "object_kind": "push",
+    "event_name": "push",
+    "before": "0000000000000000000000000000000000000000",
+    "after": "fce461eb29e5c69c6897b3f7b35f16f66244c702",
+    "ref": "refs/heads/create-branch",
+    "ref_protected": false,
+    "checkout_sha": "fce461eb29e5c69c6897b3f7b35f16f66244c702",
+    "message": null,
+    "user_id": 1029,
+    "user_name": "Magnus Holm Jensen",
+    "user_username": "mocked-username",
+    "user_email": null,
+    "user_avatar": "https://secure.gravatar.com/avatar/8d495b06735573fe0d8434239d26d7a7d27858008d1ff46e0b1f9a58e3865df7?s=80&d=identicon",
+    "project_id": 8607,
+    "project": {
+        "id": 8607
+    },
+    "commits": [
+    ],
+    "total_commits_count": 0,
+    "push_options": {
+    }
+}

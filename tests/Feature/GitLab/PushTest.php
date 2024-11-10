@@ -31,8 +31,11 @@ beforeEach(function() {
 
 function sendPushEvent(mixed $pushEvent): TestResponse
 {
+    /** @var Project $project */
+    $project = test()->project;
+
     return postJson(route('reporter'), $pushEvent, [
-        'X-GitLab-Token' => Project::token(test()->project->gitlab_project_id),
+        'X-GitLab-Token' => Project::token($project->gitlab_project_id),
         'X-GitLab-Event' => 'Push Hook',
     ]);
 }
@@ -45,6 +48,16 @@ it('skips branch deletion push event', function() {
     $branchDeletionPush['project_id'] = $this->project->gitlab_project_id;
 
     $res = sendPushEvent($branchDeletionPush);
+
+    $res->assertSeeText("SKIPPED");
+});
+
+it('skips branch creation push event', function() {
+    $branchCreationPush = json_decode(file_get_contents(testDirectory('Feature/GitLab/Stubs/Pushes/branch_creation_push.json')), true);
+    $branchCreationPush['project']['id'] = $this->project->gitlab_project_id;
+    $branchCreationPush['project_id'] = $this->project->gitlab_project_id;
+
+    $res = sendPushEvent($branchCreationPush);
 
     $res->assertSeeText("SKIPPED");
 });
