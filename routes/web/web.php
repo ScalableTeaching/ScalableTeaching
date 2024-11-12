@@ -19,7 +19,7 @@ Route::get('start', [HomeController::class, 'start'])->middleware('auth')->name(
 
 Route::get('status', [HomeController::class, 'status'])->middleware('auth')->name('status');
 
-Route::prefix('surveys')->as('surveys.')->controller(SurveyController::class)->group(function() {
+Route::prefix('surveys')->as('surveys.')->middleware('auth')->controller(SurveyController::class)->group(function() {
     Route::get('/', 'index')->name('index');
     Route::get('all', 'all')->name('all');
     Route::get('{survey}', 'details')->name('details');
