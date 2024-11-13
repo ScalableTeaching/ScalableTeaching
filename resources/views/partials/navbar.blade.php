@@ -121,7 +121,7 @@
 
         <div class="items-center md:flex h-full">
             <div class="flex flex-col md:flex-row items-center h-full">
-                @if(auth()->user()->is_sys_admin)
+                @if(auth()->user()?->is_sys_admin)
                 <a href="{{ route('admin.index') }}"
                    class="py-5 px-2 box-border text-sm {{ str_starts_with(Request::path(), "admin") ? "border-b-4 border-lime-green-400" : "" }} font-medium text-gray-700 dark:text-gray-200 md:mx-4 md:my-0">
                     Admin
@@ -131,16 +131,17 @@
                    class="py-5 px-2 box-border text-sm {{ str_starts_with(Request::path(), "courses") ? "border-b-4 border-lime-green-400" : "hover:bg-white/10" }} font-medium text-gray-700 dark:text-gray-200 md:mx-4 md:my-0">
                     Courses
                 </a>
-                @if(auth()->user()->surveys()->count() > 0)
+                @if(auth()->user()?->surveys()?->count() > 0)
                     <a href="{{ route('surveys.index') }}"
-                       class="py-5 px-2 box-border text-sm font-medium text-gray-700 dark:text-gray-200 md:mx-4 md:my-0">
+                    class="py-5 px-2 box-border text-sm font-medium text-gray-700 dark:text-gray-200 md:mx-4 md:my-0">
                         Surveys
                     </a>
                 @endif
+                @auth
                 <span class="my-1 text-sm py-1 px-2 font-medium bg-lime-green-500 rounded text-white md:ml-4 md:my-0">
                     {{ auth()->user()->name }}
                 </span>
-                @auth
+
                     <a href="{{route("logout")}}"
                        class="my-1 text-sm py-1 px-2 font-medium hover:bg-red-400 rounded hover:text-black text-white md:ml-4 md:my-0">
                         Logout
