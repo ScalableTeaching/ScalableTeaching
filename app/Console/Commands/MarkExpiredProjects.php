@@ -39,8 +39,9 @@ class MarkExpiredProjects extends Command
      */
     public function handle() : int
     {
+        $tasks = Task::where('is_visible', true)->get();
         /** @var Task $task */
-        foreach (Task::all() as $task)
+        foreach ($tasks as $task)
         {
             $this->info("Marking tasks under [{$task->course->name}] $task->name");
             $overDueTime = $task->ends_at->addMinutes(5);
