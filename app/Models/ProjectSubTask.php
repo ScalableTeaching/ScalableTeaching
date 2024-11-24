@@ -114,27 +114,6 @@ class ProjectSubTask extends Model
     }
 
     /**
-     * @param Project $project
-     * @return bool
-     * @throws \Exception
-     * @deprecated Kept around to cover all the same cases, but will be removed after they have all been converted to AutomaticGrading module settings.
-     */
-    protected static function isFinished(Project $project): bool
-    {
-        $completedSubTasks = $project->subTasks->pluck('sub_task_id');
-        $task = $project->task;
-
-        return match ($task->correction_type)
-        {
-            CorrectionType::AllTasks       => ! $task->sub_tasks->isMissingAny($completedSubTasks),
-            CorrectionType::RequiredTasks  => ! $task->sub_tasks->isMissingAnyRequired($completedSubTasks),
-            CorrectionType::NumberOfTasks  => $completedSubTasks->count() >= $task->correction_tasks_required,
-            CorrectionType::PointsRequired => $task->sub_tasks->points($completedSubTasks) >= $task->correction_points_required,
-            default                        => false
-        };
-    }
-
-    /**
      * @return BelongsTo<Project,ProjectSubTask>
      */
     public function project()
