@@ -33,10 +33,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('tasks:mark-expired')->everyFiveMinutes();
-        $schedule->command('tasks:delegate')->everyFifteenMinutes();
-        $schedule->command('pipelines:refresh-stale')->everyThirtyMinutes();
-        $schedule->command('tasks:preload')->everyThirtyMinutes();
+        $schedule->command('tasks:mark-expired')->everyFiveMinutes()->sendOutputTo(storage_path('logs/tasks-mark-expired.log'));
+        $schedule->command('tasks:delegate')->everyFifteenMinutes()->sendOutputTo(storage_path('logs/tasks-delegate.log'));
+        $schedule->command('pipelines:refresh-stale')->everyThirtyMinutes()->sendOutputTo(storage_path('logs/pipelines-refresh-stale.log'));
+        $schedule->command('tasks:preload')->everyThirtyMinutes()->sendOutputTo(storage_path('logs/tasks-preload.log'));
     }
 
     /**
