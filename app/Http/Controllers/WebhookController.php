@@ -100,7 +100,14 @@ class WebhookController extends Controller
 
         if ($this->isBranchDeletionPush())
         {
-            Log::info("Skipping branch deletion push event for project {$project->id} on branch " . request('ref'));
+            Log::debug("Skipping branch deletion push event for project {$project->id} on branch " . request('ref'));
+
+            return "SKIPPED";
+        }
+
+        if ($this->isBranchCreationPush())
+        {
+            Log::debug("Skipping branch creation push event for project {$project->id} on branch " . request('ref'));
 
             return "SKIPPED";
         }
@@ -135,5 +142,14 @@ class WebhookController extends Controller
     private function isBranchDeletionPush(): bool
     {
         return request('checkout_sha') == null && intval(request('after')) == 0 && request('total_commits_count') == 0;
+    }
+
+    /**
+     * When creating a branch, it triggers a push event that will have the before key set to pure 0's and total_commits_count = 0.
+     * @return bool whether the push event is a branch creation
+     */
+    private function isBranchCreationPush(): bool
+    {
+        return intval(request('before')) == 0 && request('total_commits_count') == 0;
     }
 }

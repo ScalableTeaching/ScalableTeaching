@@ -4,6 +4,7 @@ use App\Events\ProjectCreated;
 use App\Listeners\GitLab\Project\DisableForking;
 use App\Jobs\Project\RefreshMemberAccess;
 use App\Listeners\GitLab\Project\RegisterWebhook;
+use App\Listeners\GitLab\Project\UnprotectDefaultBranch;
 use App\Models\Course;
 use App\Models\Project;
 use App\Models\Task;
@@ -47,4 +48,11 @@ it('ensures the RegisterWebhook event is fired when ProjectCreated', function() 
     Project::factory()->for(Task::factory()->for(Course::factory()))->create();
 
     Event::assertListening(ProjectCreated::class, RegisterWebhook::class);
+});
+
+it('ensures the UnprotectDefaultBranch event is fired when ProjectCreated is triggered', function() {
+    Event::fake();
+    Project::factory()->for(Task::factory()->for(Course::factory()))->create();
+
+    Event::assertListening(ProjectCreated::class, UnprotectDefaultBranch::class);
 });
