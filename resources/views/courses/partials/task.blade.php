@@ -1,4 +1,4 @@
-<a href="{{ route(auth()->user()->can('viewDashboard', $task['details']) ? 'courses.tasks.admin.index' : 'courses.tasks.show', [$task['details']->course->id, $task['details']->id]) }}" class="hover:shadow-md shadow rounded-lg mb-4">
+<a href="{{ route(auth()->user()->can('viewDashboard', $task['details']) ? 'courses.tasks.admin.index' : 'courses.tasks.show', [$task['details']->course->id, $task['details']->id]) }}" class="hover:shadow-md shadow rounded-lg mb-4 max-h-fit    ">
     <div @class([
         'px-8 py-4 mx-auto bg-white dark:bg-gray-600 rounded-lg']) class="">
         <div class="flex items-center justify-between">

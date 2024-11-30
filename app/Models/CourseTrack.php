@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\CourseTrackFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,8 +11,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 
 /**
+ * @property-read int $id
+ * @property int $course_id
  * @property-read CourseTrack|null $parent
  * @property-read CourseTrack[]|Collection $immediateChildren
+ * @method static CourseTrackFactory factory()
+ * @mixin \Eloquent
  */
 class CourseTrack extends Model
 {
@@ -139,5 +144,10 @@ class CourseTrack extends Model
             return $remaining;
 
         return $remaining->whereNotIn('id', $this->children()->pluck('id'));
+    }
+
+    public function getDepthAttribute(): int
+    {
+        return $this->path()->count();
     }
 }

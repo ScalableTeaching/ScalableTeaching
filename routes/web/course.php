@@ -41,9 +41,7 @@ Route::group(['prefix' => '{course}', 'middleware' => ['can:view,course']], func
         Route::post('{task}/create-project', [TaskController::class, 'doCreateProject'])->name('createProject');
     });
 
-    Route::prefix('tracks')->as('tracks.')->controller(CourseTrackController::class)->group(function() {
-        Route::get('{track}', 'show')->name('show');
-    });
+    Route::get('tracks/{track}', [CourseTrackController::class, 'show'])->name('tracks.show');
 
     Route::group(['prefix' => 'groups', 'as' => 'groups.'], function() {
         Route::get('/', [GroupController::class, 'index'])->name('index');
@@ -98,6 +96,16 @@ Route::group(['prefix' => '{course}', 'middleware' => ['can:view,course']], func
             Route::put('users/{user}', [GradingController::class, 'updateGrading'])->name('updateGrading');
             Route::get('tasks/{task}', [GradingController::class, 'taskInfo'])->name('task-info');
             Route::post('{grade}/set-selected', [GradingController::class, 'setSelected'])->name('set-selected');
+        });
+
+        Route::prefix('tracks')->as('tracks.')->controller(CourseTrackController::class)->middleware('can:manage,course')->group(function() {
+            Route::get('/', 'index')->name('index');
+            Route::get('create', 'create')->name('create');
+            Route::post('create', 'store')->name('store');
+            Route::delete('{track}', 'destroy')->name('destroy');
+            Route::get("{track}/assign", 'assign')->name('assign');
+            Route::post("{track}/assign", 'doAssign')->name('doAssign');
+            Route::delete('{track}/assign/{task}', 'unassign')->name('unassign');
         });
     });
 });

@@ -56,6 +56,7 @@ use Illuminate\Support\Str;
  * @property string $name
  * @static Task findOrFail($id, $columns = []) {
  * @property SubTaskCollection $sub_tasks
+ * @property-read int $track_id
  * @property-read CourseTrack|null $track
  * @property-read SurveyTask|null $pivot
  * @property-read bool $hasEnded

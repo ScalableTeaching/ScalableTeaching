@@ -64,6 +64,14 @@
                 @endforeach
             </div>
             <div>
+                @can('manage', $course)
+                    <div class="flex justify-between mb-4 gap-4">
+                        <a href="{{ route('courses.manage.tracks.assign', [$course, $track]) }}"
+                           class="bg-lime-green-500 text-white rounded-lg px-4 py-2.5 text-center block flex-grow hover:bg-lime-green-600 transition-colors">Assign tasks</a>
+                        <a href="{{ route('courses.manage.tracks.create', [$course, 'parent' => $track->id]) }}"
+                             class="bg-lime-green-500 text-white rounded-lg px-4 py-2.5 text-center block flex-grow hover:bg-lime-green-600 transition-colors">Create subtrack</a>
+                    </div>
+                @endcan
                 <div class="bg-gray-200 dark:bg-gray-600 shadow-md rounded-md py-2 px-2">
                     <div class="flex">
                         <span class="mr-1">
