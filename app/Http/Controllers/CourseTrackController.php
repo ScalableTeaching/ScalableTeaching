@@ -77,7 +77,7 @@ class CourseTrackController extends Controller
             'description' => $validated['description'],
         ]);
 
-        if (array_key_exists('parent', $validated))
+        if (array_key_exists('parent', $validated) && $validated['parent'] != null)
         {
             $parent = $course->tracks()->where('id', $validated['parent'])->first();
             if ($parent == null)
