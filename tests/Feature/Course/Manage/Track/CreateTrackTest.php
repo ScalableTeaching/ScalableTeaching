@@ -51,12 +51,12 @@ it('validates the name field', function() {
 
 it('allows an empty description', function() {
     actingAs($this->professor);
-    post("/courses/{$this->course->id}/manage/tracks/create", [
+    post(route('courses.manage.tracks.create', [$this->course]), [
         'name'        => 'Hello World',
         'description' => '',
     ])->assertSessionHasNoErrors();
 
-    post("/courses/{$this->course->id}/manage/tracks/create", [
+    post(route('courses.manage.tracks.create', [$this->course]), [
         'name' => 'Hello World',
     ])->assertSessionHasNoErrors();
 });
