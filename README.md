@@ -39,7 +39,7 @@ Copy the `.env.example` to a new `.env` file, and edit the following variables:
     2. `DB_USERNAME`
     3. `DB_PASSWORD`
 3. Configure the `SCALABLE_SECRET`. This secret is used to ensure that student's don't tamper with the runner settings within their repo.
-
+4. **When running locally** you may consider switching the `LOG_CHANNEL` to `single` instead of `stack`, this will stop the system from attempting to log to Teams
 
 #### 3. Migrate the database
 Use the `php artisan migrate` command to migrate the database.
