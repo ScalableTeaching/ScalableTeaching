@@ -18,7 +18,7 @@ ScalableTeaching currently relies on a GitLab + GitLab CI environment to serve a
 The solution is built on top of the Laravel web framework (v9), with Vue 2 powering some frontend components.
 
 #### 1. Installing dependencies
-Run `composer install` to install Laravel and the project's dependencies
+Run `composer install` to install Laravel and the project's dependencies (**Note:** If you are on windows you will need to add `--ignore-platform-req=ext-pcntl --ignore-platform-req=ext-posix` since these packages are not supported on windows and `laravel/horizon` will run without them)
 
 Run `yarn` to install the node dependencies for the frontend.
 
