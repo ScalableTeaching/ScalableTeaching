@@ -27,17 +27,18 @@ Run `yarn` to install the node dependencies for the frontend.
 Copy the `.env.example` to a new `.env` file, and edit the following variables:
 
 1. Setup the authentication. The authentication service uses GitLab's OAuth - configure the values below. If you are uncertain, these can be retrieved by inquirying the IT department.
+   (**Note:** if you are running Scalable teaching locally, only `GITLAB_URL` (e.g. `https://gitlab.sdu.dk`), `GITLAB_GROUP` (e.g. the ID of the group Scalable should put repo's in) and `GITLAB_ACCESS_TOKEN` are needed.)
     1. `GITLAB_CLIENT_ID`
     2. `GITLAB_CLIENT_SECRET`
     3. `GITLAB_REDIRECT_URL` should be set to the host and port of your application and append `/login/callback` to it.
-    4. `GITLAB_URL` should refer to the url of the gitlab instance.
-    5. `GITLAB_ACCESS_TOKEN` of the user ScalableTeaching should act as within GitLab.
+    4. `GITLAB_GROUP` Should be set to the id of the group id that all repositories and tasks should be created within.
+    5. `GITLAB_URL` should refer to the url of the gitlab instance.
+    6. `GITLAB_ACCESS_TOKEN` of the user ScalableTeaching should act as within GitLab.
 2. Configure the database such that the application can establish a connection to your database
     1. `DB_HOST`
-    2. `DB_PASSWORD`
-    3. `DB_USERNAME`
+    2. `DB_USERNAME`
+    3. `DB_PASSWORD`
 3. Configure the `SCALABLE_SECRET`. This secret is used to ensure that student's don't tamper with the runner settings within their repo.
-4. `GITLAB_GROUP_ID` Should be set to the id of the group id that all repositories and tasks should be created within.
 
 
 #### 3. Migrate the database
