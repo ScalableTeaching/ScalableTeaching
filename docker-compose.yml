@@ -7,11 +7,23 @@ services:
         ports:
             - "3306:3306"
         environment:
-            - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
-            - MYSQL_DATABASE=${DB_DATABASE}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_DATABASE: ${DB_DATABASE}
         command: mysqld
         volumes:
-            -   dev-db:/var/lib/mysql
+            - dev-db:/var/lib/mysql
+    database-explorer:
+        image: phpmyadmin
+        restart: always
+        ports:
+            - 8036:80
+        environment:
+            PMA_ARBITRARY: 1
+            PMA_HOST: database
+            PMA_PORT: 3306
+            PMA_USER: root
+            PMA_PASSWORD: ${DB_PASSWORD}
+
     redis:
         image: redis:latest
         ports:
@@ -21,8 +33,8 @@ services:
         ports:
             - "3307:3306"
         environment:
-            - MYSQL_ROOT_PASSWORD=testroot
-            - MYSQL_DATABASE=test
+            MYSQL_ROOT_PASSWORD: testroot
+            MYSQL_DATABASE: test
         command: mysqld --sql_mode="NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
         tmpfs:
             - /var/lib/mysql:rw

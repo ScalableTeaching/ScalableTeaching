@@ -15,9 +15,9 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Str;
 
 /**
- * @property int id
- * @property int course_id
- * @property string name
+ * @property int $id
+ * @property int $course_id
+ * @property string $name
  * @property-read Collection<int,User> $members
  * @property-read Course $course
  * @property-read Collection<Project> $projects

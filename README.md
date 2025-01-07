@@ -18,7 +18,7 @@ ScalableTeaching currently relies on a GitLab + GitLab CI environment to serve a
 The solution is built on top of the Laravel web framework (v9), with Vue 2 powering some frontend components.
 
 #### 1. Installing dependencies
-Run `composer install` to install Laravel and the project's dependencies
+Run `composer install` to install Laravel and the project's dependencies (**Note:** If you are on windows you will need to add `--ignore-platform-req=ext-pcntl --ignore-platform-req=ext-posix` since these packages are not supported on windows and `laravel/horizon` will run without them)
 
 Run `yarn` to install the node dependencies for the frontend.
 
@@ -27,23 +27,40 @@ Run `yarn` to install the node dependencies for the frontend.
 Copy the `.env.example` to a new `.env` file, and edit the following variables:
 
 1. Setup the authentication. The authentication service uses GitLab's OAuth - configure the values below. If you are uncertain, these can be retrieved by inquirying the IT department.
+   (**Note:** if you are running Scalable teaching locally, only `GITLAB_URL` (e.g. `https://gitlab.sdu.dk`), `GITLAB_GROUP` (e.g. the ID of the group Scalable should put repo's in) and `GITLAB_ACCESS_TOKEN` are needed.)
     1. `GITLAB_CLIENT_ID`
     2. `GITLAB_CLIENT_SECRET`
     3. `GITLAB_REDIRECT_URL` should be set to the host and port of your application and append `/login/callback` to it.
-    4. `GITLAB_URL` should refer to the url of the gitlab instance.
-    5. `GITLAB_ACCESS_TOKEN` of the user ScalableTeaching should act as within GitLab.
+    4. `GITLAB_GROUP` Should be set to the id of the group id that all repositories and tasks should be created within.
+    5. `GITLAB_URL` should refer to the url of the gitlab instance.
+    6. `GITLAB_ACCESS_TOKEN` of the user ScalableTeaching should act as within GitLab.
 2. Configure the database such that the application can establish a connection to your database
     1. `DB_HOST`
-    2. `DB_PASSWORD`
-    3. `DB_USERNAME`
+    2. `DB_USERNAME`
+    3. `DB_PASSWORD`
 3. Configure the `SCALABLE_SECRET`. This secret is used to ensure that student's don't tamper with the runner settings within their repo.
-4. `GITLAB_GROUP_ID` Should be set to the id of the group id that all repositories and tasks should be created within.
-
+4. **When running locally** you may consider switching the `LOG_CHANNEL` to `single` instead of `stack`, this will stop the system from attempting to log to Teams
 
 #### 3. Migrate the database
 Use the `php artisan migrate` command to migrate the database.
 
 Additionally, if you want to populate it with dummy data, add `--seed` to the command, and if you want to migrate it from scratch again then run `migrate:fresh` instead.
+
+#### 4. Setting up local issuer certificate
+You may get this error when attempting to create tasks:
+```cURL error 60: SSL certificate problem: unable to get local issuer certificate```
+If you do, follow these steps
+1. Download this file: http://curl.haxx.se/ca/cacert.pem
+2. Place this file in the `C:\path\to\php` folder
+3. Open php.iniand find this line:
+   ;curl.cainfo
+
+4. Change it to:
+   `curl.cainfo = "C:\path\to\php\cacert.pem"`
+
+5. Make sure you remove the semicolon at the beginning of the line.
+
+6. Save changes to php.ini, rerun `php artisan serve` and it should work 
 
 ## Development environment and CI
 
