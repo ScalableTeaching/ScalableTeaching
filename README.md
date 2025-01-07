@@ -46,6 +46,22 @@ Use the `php artisan migrate` command to migrate the database.
 
 Additionally, if you want to populate it with dummy data, add `--seed` to the command, and if you want to migrate it from scratch again then run `migrate:fresh` instead.
 
+#### 4. Setting up local issuer certificate
+You may get this error when attempting to create tasks:
+```cURL error 60: SSL certificate problem: unable to get local issuer certificate```
+If you do, follow these steps
+1. Download this file: http://curl.haxx.se/ca/cacert.pem
+2. Place this file in the `C:\path\to\php` folder
+3. Open php.iniand find this line:
+   ;curl.cainfo
+
+4. Change it to:
+   `curl.cainfo = "C:\path\to\php\cacert.pem"`
+
+5. Make sure you remove the semicolon at the beginning of the line.
+
+6. Save changes to php.ini, rerun `php artisan serve` and it should work 
+
 ## Development environment and CI
 
 To enhance the developer workflow, this repository includes various tools to ensure a high quality of code.
