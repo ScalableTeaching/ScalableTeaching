@@ -645,7 +645,7 @@ class Task extends Model
             $projectName = $owner == null ? Str::slug("$this->name-" . Str::random(8)) : $owner->projectName;
             $project = $projects->firstWhere('name', $projectName);
 
-            abort_unless($this->module_configuration->isEnabled(Template::class), 400, 'The template module is not enabled.');
+            abort_unless($this->isTemplateTask(), 400, 'The template module is not enabled.');
             $linkRepositoryModule = $this->module_configuration->resolveModule(LinkRepository::class);
             /** @var LinkRepositorySettings $settings */
             $settings = $linkRepositoryModule->settings();
@@ -736,6 +736,15 @@ class Task extends Model
     }
 
     /**
+     * Checks if the task repository should be cloned when the task i started
+     * @return bool true or false whether the task should be treated as a template
+     */
+    public function isTemplateTask(): bool
+    {
+        return $this->module_configuration->isEnabled(Template::class);
+    }
+
+    /**
      * Check if the task is being automatically graded
      * @return bool true or false whether the task is being automatically graded
      */
@@ -787,4 +796,24 @@ class Task extends Model
 
         return $completedSubTaskPoints >= $pointsRequired;
     }
+
+    public function getGitlabProjectId(): int|null
+    {
+        if ( ! $this->module_configuration->isEnabled(LinkRepository::class))
+        {
+            Log::warning("LinkRepository module is not enabled.");
+            return null;
+        }
+        $linkRepository = $this->module_configuration->resolveModule(LinkRepository::class);
+        $linkRepositorySettings = $linkRepository->settings();
+        $repo = $linkRepositorySettings->repo;
+        if ($repo == null){
+            Log::warning("This task is not linked to Gitlab project.");
+            return null;
+        }
+        $explodedRepoLink = explode("/", $repo);
+        $project_id = end($explodedRepoLink);
+        return intval($project_id);
+    }
+
 }

@@ -18,7 +18,7 @@
                     <span class="font-semibold">{{ progress.endDay }}</span>
                 </div>
                 <div class="flex justify-start gap-4">
-                    <a :href="'https://gitlab.sdu.dk/projects/' +  project.gitlab_project_id" target="_blank"
+                    <a :href="'https://gitlab.sdu.dk/projects/' +  project.gitlab_project_id !== 'null' ? project.gitlab_project_id : source_project_id" target="_blank"
                             class="flex items-center px-2 py-2 tracking-wide text-white capitalize transition-colors duration-200 transform bg-lime-green-600 rounded-md hover:bg-lime-green-500 focus:outline-none focus:ring focus:ring-lime-green-300 focus:ring-opacity-80">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
@@ -33,6 +33,6 @@
 
 <script>
 export default {
-    props: ['progress', 'project']
+    props: ['progress', 'project', 'source_project_id']
 }
 </script>

@@ -138,7 +138,7 @@ class UserManagementController extends Controller
         {
             $groups->whereHas('members', function(Builder $query) {
                 $query->where('name', 'like', '%' . request('filter') . '%');
-            })->orWhere(function(Builder $query) use ($course) { // @phpstan-ignore-line
+            })->orWhere(function(Builder $query) use ($course) {
                 $query->where('course_id', $course->id)->where('name', 'like', '%'. request('filter') . '%');
             });
         }

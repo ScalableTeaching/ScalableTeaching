@@ -94,11 +94,11 @@
                     <div
                         class="absolute bg-white p-4 rounded-md shadow-md max-vh70 overflow-x-hidden overflow-scroll dark:bg-gray-800">
                         <div class="prose-sm dark:prose-light"
-                             :class="[hideMissingAssignmentWarning || project != null || progress.ended ? '': 'filter blur-sm']"
+                             :class="[hideMissingAssignmentWarning || project != null || progress.ended || !isTemplateTask ? '': 'filter blur-sm']"
                              v-html="task.description"/>
                     </div>
                     <div class="absolute flex w-full justify-center"
-                         v-if="!hideMissingAssignmentWarning && project == null && !progress.ended">
+                         v-if="!hideMissingAssignmentWarning && project == null && !progress.ended && isTemplateTask">
                         <div
                             class="bg-white shadow-lg border border-lime-green-600 dark:border-lime-green-400 px-4 py-6 rounded-md mt-8 dark:bg-gray-800">
                             <div class="flex justify-center items-center">
@@ -190,7 +190,7 @@
                                :project="project"></completed>
                     <overdue v-else-if="project != null && project.isMissed"></overdue>
                 </div>
-                <go-to-repo v-if="task.source_project_id != null && task.type === 'exercise'" :url="'https://gitlab.sdu.dk/projects/' + task.source_project_id"/>
+                <go-to-repo v-if="task.module != null && (task.type === 'exercise') || !isTemplateTask" :url="'https://gitlab.sdu.dk/projects/' + source_project_id"/>
                 <mark-completed v-if="project != null && this.isTextTask" :csrf="this.csrf" :grade="this.grade" :course-id="this.task.course_id" :task-id="this.task.id" :project-id="this.project.id"></mark-completed>
                 <div v-if="false" class="bg-white shadow-lg p-4 rounded-md mt-8 dark:bg-gray-800">
                     <h3 class="text-gray-800 dark:text-gray-100 text-xl font-semibold mb-3">Builds</h3>
@@ -238,7 +238,7 @@ export default {
         Warning, BarChart, Overdue, Started, NotStarted, Settings, BuildTable, LineChart, Completed, Alert, Waiting
     },
     props: ['editRoute', 'task', 'grade', 'survey', 'pushes', 'project', 'progress', 'totalMyBuilds', 'totalBuilds', 'newProjectUrl', 'csrf', 'buildGraph', 'groups', 'userName', 'warning', 'subTasks', 'codeRoute', 'isTextTask', 'isCodeTask',
-        'gradingConfig' // {gradingType: AutomaticGradingType enum, requiredSubtaskIds?: [int], pointsRequired?: int}
+        'gradingConfig', 'isTemplateTask', 'source_project_id' // {gradingType: AutomaticGradingType enum, requiredSubtaskIds?: [int], pointsRequired?: int}
     ],
     methods: {
         startAssignment: async function (startAs) {

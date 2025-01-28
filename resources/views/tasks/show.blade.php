@@ -7,6 +7,8 @@
               edit-route="{{ route('courses.tasks.admin.preferences', [$course, $task]) }}"
           @endcan
           code-route="{{ $codeRoute }}"
+          source_project_id="{{ $task->getGitlabProjectId() }}"
+          :is-template-task="{!! $task->isTemplateTask() ? true : 'null' !!}"
           :grade="{{ $task->grade(auth()->user()) ?? 'null' }}"
           :survey="{{ json_encode($survey) }}"
           :sub-tasks="{{ json_encode($subTasks) }}" :project="{{ is_null($project) ? 'null' : $project}}"
