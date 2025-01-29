@@ -108,7 +108,7 @@ class Grade extends Model
         /**
          * @var Grade $source
          */
-        $source = $created->source();
+        $source = $created->source;
         $affectedBy = match ($created->source_type)
         {
             User::class            => $created->source_id,
