@@ -802,17 +802,24 @@ class Task extends Model
         if ( ! $this->module_configuration->isEnabled(LinkRepository::class))
         {
             Log::warning("LinkRepository module is not enabled.");
+
             return null;
         }
         $linkRepository = $this->module_configuration->resolveModule(LinkRepository::class);
+        /**
+         * @var LinkRepositorySettings $linkRepositorySettings
+         */
         $linkRepositorySettings = $linkRepository->settings();
         $repo = $linkRepositorySettings->repo;
-        if ($repo == null){
+        if ($repo == null)
+        {
             Log::warning("This task is not linked to Gitlab project.");
+
             return null;
         }
         $explodedRepoLink = explode("/", $repo);
         $project_id = end($explodedRepoLink);
+
         return intval($project_id);
     }
 
