@@ -23,8 +23,7 @@ class MarkAsDone extends Module
         AutomaticGrading::class,
         SubtaskGradingAndFeedback::class,
         Subtasks::class,
-        BuildTracking::class
+        BuildTracking::class,
     ];
 
-    protected array $dependencies = [Template::class];
 }

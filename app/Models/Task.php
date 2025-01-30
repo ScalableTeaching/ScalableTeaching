@@ -7,6 +7,7 @@ use App\Models\Enums\CorrectionType;
 use App\Models\Enums\TaskTypeEnum;
 use App\Modules\AutomaticGrading\AutomaticGrading;
 use App\Modules\AutomaticGrading\AutomaticGradingSettings;
+use App\Modules\BuildTracking\BuildTracking;
 use App\Modules\LinkRepository\LinkRepository;
 use App\Modules\LinkRepository\LinkRepositorySettings;
 use App\Modules\MarkAsDone\MarkAsDone;
@@ -718,7 +719,7 @@ class Task extends Model
     }
 
     /**
-     * Checks if the task is a text task, by checking if the mark as done module is installed.
+     * Checks if the task is a mark-as-complete task, by checking if the mark as done module is installed.
      * @return bool
      */
     public function isMarkAsCompleteTask(): bool

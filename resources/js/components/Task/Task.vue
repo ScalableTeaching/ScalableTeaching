@@ -277,7 +277,7 @@ export default {
             return this.project != null && this.survey.details != null && this.survey.can.view;
         },
         showBuilds: function () {
-            return this.project !== null && this.isCodeTask;
+            return this.project !== null && this.isCodeTask && this.isTrackingBuilds;
         },
         /*taskCount: function () {
             return this.subTasks.list.reduce((total, group) => total + group.tasks.length, 0);
