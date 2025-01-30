@@ -8,7 +8,6 @@
           @endcan
           code-route="{{ $codeRoute }}"
           source_project_id="{{ $task->getGitlabProjectId() }}"
-          :is-template-task="{!! $task->isTemplateTask() ? true : 'null' !!}"
           :grade="{{ $task->grade(auth()->user()) ?? 'null' }}"
           :survey="{{ json_encode($survey) }}"
           :sub-tasks="{{ json_encode($subTasks) }}" :project="{{ is_null($project) ? 'null' : $project}}"
@@ -18,5 +17,7 @@
           user-name="{{ auth()->user()->name }}" :total-builds="{{ $builds->sum() }}"
           :total-my-builds="{{ $myBuilds->sum() }}" csrf="{{ csrf_token() }}"
           :grading-config="{{ $task->isAutomaticallyGraded() ? json_encode($task->module_configuration->resolveModule(AutomaticGrading::class)->settings()) : json_encode([]) }}"
-          new-project-url="{{ $newProjectRoute }}" is-text-task="{{ $task->isTextTask() }}" is-code-task="{{ $task->isCodeTask() }}"></task>
+          new-project-url="{{ $newProjectRoute }}"
+          is-mark-as-complete-task="{{ $task->isMarkAsCompleteTask() }}" is-code-task="{{ $task->isCodeTask() }}"
+          is-template-task="{{ $task->isTemplateTask() }}" is-tracking-builds="{{ $task->isTRackingBuilds() }}"></task>
 @endsection

@@ -637,7 +637,7 @@ class Task extends Model
     private function newProject(User|Group|null $owner): Project
     {
 
-        if ($this->isCodeTask())
+        if ($this->isTemplateTask())
         {
             $manager = app(GitLabManager::class);
             $resultPager = new ResultPager($manager->connection());
@@ -721,7 +721,7 @@ class Task extends Model
      * Checks if the task is a text task, by checking if the mark as done module is installed.
      * @return bool
      */
-    public function isTextTask(): bool
+    public function isMarkAsCompleteTask(): bool
     {
         return $this->module_configuration->isEnabled(MarkAsDone::class);
     }
@@ -736,12 +736,21 @@ class Task extends Model
     }
 
     /**
-     * Checks if the task repository should be cloned when the task i started
+     * Checks if the task repository should be cloned when the task is started
      * @return bool true or false whether the task should be treated as a template
      */
     public function isTemplateTask(): bool
     {
         return $this->module_configuration->isEnabled(Template::class);
+    }
+
+    /**
+     * Checks if the task has build tracking enabled
+     * @return bool true or false whether the task should be treated as a template
+     */
+    public function isTrackingBuilds(): bool
+    {
+        return $this->module_configuration->isEnabled(BuildTracking::class);
     }
 
     /**

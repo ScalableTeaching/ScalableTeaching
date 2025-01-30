@@ -94,11 +94,11 @@
                     <div
                         class="absolute bg-white p-4 rounded-md shadow-md max-vh70 overflow-x-hidden overflow-scroll dark:bg-gray-800">
                         <div class="prose-sm dark:prose-light"
-                             :class="[hideMissingAssignmentWarning || project != null || progress.ended || !isTemplateTask ? '': 'filter blur-sm']"
+                             :class="[hideMissingAssignmentWarning || project != null || progress.ended ? '': 'filter blur-sm']"
                              v-html="task.description"/>
                     </div>
                     <div class="absolute flex w-full justify-center"
-                         v-if="!hideMissingAssignmentWarning && project == null && !progress.ended && isTemplateTask">
+                         v-if="!hideMissingAssignmentWarning && project == null && !progress.ended">
                         <div
                             class="bg-white shadow-lg border border-lime-green-600 dark:border-lime-green-400 px-4 py-6 rounded-md mt-8 dark:bg-gray-800">
                             <div class="flex justify-center items-center">
@@ -154,7 +154,7 @@
                                :points-required="task.correction_points_required"
                                :correction-type="task.correction_type"
                                :is-code-task="this.isCodeTask"
-                               :is-text-task="this.isTextTask"
+                               :is-text-task="this.isMarkAsCompleteTask"
                                :grading-config="this.gradingConfig"
                                :project-status="project !== null ? project.status : null"></sub-tasks>
                 </div>
@@ -172,7 +172,7 @@
                         <h3 class="font-bold text-xl dark:text-white text-center">Group Project</h3>
                     </div>
                 </div>
-                <div v-if="project !== null && this.isCodeTask">
+                <div v-if="project !== null && this.isCodeTask && this.isTemplateTask">
                     <validation-failed v-if="project != null && project.validation_errors != null && project.validation_errors.length > 0" :errors="project.validation_errors"></validation-failed>
                     <warning :message="warning" v-if="warning.length > 0"></warning>
                     <part-of-track v-if="task.track != null" :track="task.track"
@@ -180,7 +180,7 @@
 
                     <not-started :errorMessage.sync="errorMessage" @startAssignment="startAssignment"
                                  :starting-assignment="startingAssignment" :groups="groups" :user-name="userName"
-                                 :is-text-task="this.isTextTask"
+                                 :is-text-task="this.isMarkAsCompleteTask"
                                  v-if="(hideMissingAssignmentWarning || tab !== 'description') && project == null && !progress.ended"></not-started>
                     <started :project="project" :progress="progress"
                              v-else-if="project != null && project.status === 'active' && !progress.ended"></started>
@@ -190,8 +190,8 @@
                                :project="project"></completed>
                     <overdue v-else-if="project != null && project.isMissed"></overdue>
                 </div>
-                <go-to-repo v-if="task.module != null && (task.type === 'exercise') || !isTemplateTask" :url="'https://gitlab.sdu.dk/projects/' + source_project_id"/>
-                <mark-completed v-if="project != null && this.isTextTask" :csrf="this.csrf" :grade="this.grade" :course-id="this.task.course_id" :task-id="this.task.id" :project-id="this.project.id"></mark-completed>
+                <go-to-repo v-if="this.isCodeTask && !this.isTemplateTask && this.project" :url="'https://gitlab.sdu.dk/projects/' + source_project_id"/>
+                <mark-completed v-if="this.isMarkAsCompleteTask && this.project" :csrf="this.csrf" :grade="this.grade" :course-id="this.task.course_id" :task-id="this.task.id" :project="this.project"></mark-completed>
                 <div v-if="false" class="bg-white shadow-lg p-4 rounded-md mt-8 dark:bg-gray-800">
                     <h3 class="text-gray-800 dark:text-gray-100 text-xl font-semibold mb-3">Builds</h3>
                     <div>
@@ -237,8 +237,8 @@ export default {
         SubTasks,
         Warning, BarChart, Overdue, Started, NotStarted, Settings, BuildTable, LineChart, Completed, Alert, Waiting
     },
-    props: ['editRoute', 'task', 'grade', 'survey', 'pushes', 'project', 'progress', 'totalMyBuilds', 'totalBuilds', 'newProjectUrl', 'csrf', 'buildGraph', 'groups', 'userName', 'warning', 'subTasks', 'codeRoute', 'isTextTask', 'isCodeTask',
-        'gradingConfig', 'isTemplateTask', 'source_project_id' // {gradingType: AutomaticGradingType enum, requiredSubtaskIds?: [int], pointsRequired?: int}
+    props: ['editRoute', 'task', 'grade', 'survey', 'pushes', 'project', 'progress', 'totalMyBuilds', 'totalBuilds', 'newProjectUrl', 'csrf', 'buildGraph', 'groups', 'userName', 'warning', 'subTasks', 'codeRoute', 'isMarkAsCompleteTask', 'isCodeTask',
+        'gradingConfig', 'isTemplateTask', 'source_project_id', 'isTrackingBuilds' // {gradingType: AutomaticGradingType enum, requiredSubtaskIds?: [int], pointsRequired?: int}
     ],
     methods: {
         startAssignment: async function (startAs) {
@@ -265,7 +265,7 @@ export default {
         return {
             tab: 'description',
             errorMessage: '',
-            hideMissingAssignmentWarning: this.task.source_project_id === null || this.task.type === 'exercise',
+            hideMissingAssignmentWarning: !this.isTemplateTask && !this.isMarkAsCompleteTask,
             startingAssignment: false,
             labels: this.buildGraph.labels,
             datasets: this.buildGraph.datasets,
