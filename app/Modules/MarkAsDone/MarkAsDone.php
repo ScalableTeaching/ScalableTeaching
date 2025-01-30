@@ -3,6 +3,7 @@
 namespace App\Modules\MarkAsDone;
 
 use App\Modules\AutomaticGrading\AutomaticGrading;
+use App\Modules\BuildTracking\BuildTracking;
 use App\Modules\LinkRepository\LinkRepository;
 use App\Modules\Module;
 use App\Modules\SubtaskGradingAndFeedback\SubtaskGradingAndFeedback;
@@ -22,6 +23,7 @@ class MarkAsDone extends Module
         AutomaticGrading::class,
         SubtaskGradingAndFeedback::class,
         Subtasks::class,
+        BuildTracking::class
     ];
 
     protected array $dependencies = [Template::class];
