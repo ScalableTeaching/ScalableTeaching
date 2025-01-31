@@ -34,6 +34,7 @@ Copy the `.env.example` to a new `.env` file, and edit the following variables:
     4. `GITLAB_GROUP` Should be set to the id of the group id that all repositories and tasks should be created within.
     5. `GITLAB_URL` should refer to the url of the gitlab instance.
     6. `GITLAB_ACCESS_TOKEN` of the user ScalableTeaching should act as within GitLab.
+    7. `GITLAB_WEBHOOK_URL` the link to the WebHook for the GitLab projects
 2. Configure the database such that the application can establish a connection to your database
     1. `DB_HOST`
     2. `DB_USERNAME`
@@ -127,6 +128,8 @@ The server which runs ScalableTeaching is located on the SDU network, and it is 
 It's also **REQUIRED** to login to the VPN with your employee account so the account that ends in `@mmmi.sdu.dk`, this ensures you get routed differently on the SDU server.
 
 Then you can SSH into the server with the account created like so: `<ACCOUNT_NAME>@scalable.srv.sdu.dk` and the password is your account password.
+
+**Note:** If you get "Corrupted MAC on input." when trying to access the server you may have to add `ssh -m hmac-sha2-512 <ACCOUNT_NAME>@scalable.srv.sdu.dk` instead.
 
 #### Deployment
 Once logged in you can navigate to the `/var/www/sites/main` directory, and do a deploy with the latest changes by running the `deploy.sh` script.
