@@ -105,10 +105,14 @@ class Grade extends Model
         $class = $created->value == GradeEnum::Passed ? 'text-lime-green-600 dark:text-lime-green-400' : 'text-red-600 dark:text-red-400';
         $message = "<span class='$class'> " . $created->value->name . "</span> <a href='" . route('courses.tasks.show', [$created->task->course_id, $created->task_id]) . "'>{$created->task->name}</a>";
 
+        /**
+         * @var Grade $source
+         */
+        $source = $created->source;
         $affectedBy = match ($created->source_type)
         {
             User::class            => $created->source_id,
-            ProjectFeedback::class => $created->source->user_id,
+            ProjectFeedback::class => $source->user_id,
             default                => null
         };
         if($affectedBy == $created->user_id)
