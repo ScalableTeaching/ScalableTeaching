@@ -3,6 +3,7 @@
 namespace App\Modules\Subtasks;
 
 use App\Modules\LinkRepository\LinkRepository;
+use App\Modules\MarkAsDone\MarkAsDone;
 use App\Modules\Module;
 use App\Modules\Template\Template;
 use Route;
@@ -19,6 +20,7 @@ class Subtasks extends Module
 
     protected array $dependencies = [LinkRepository::class, Template::class];
 
+    protected array $conflicts = [MarkAsDone::class];
 
     public static function configRoutes(): void
     {

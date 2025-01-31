@@ -97,6 +97,8 @@ class TaskController extends Controller
         return view('tasks.show', [
             'course'               => $course,
             'task'                 => $task->setHidden(['markdown_description']),
+            'isTemplateTask'       => $task->isTemplateTask(),
+            'isMarkAsCompleteTask' => $task->isMarkAsCompleteTask(),
             'bg'                   => 'bg-gray-50 dark:bg-gray-600',
             'project'              => $project,
             'subTasks'             => count($subTasks) > 0

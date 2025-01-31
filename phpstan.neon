@@ -9,4 +9,3 @@ parameters:
     excludePaths:
         - app/Http/Controllers/GitLabOAuthController.php
     level: 5
-    checkMissingIterableValueType: false

@@ -7,6 +7,7 @@ use App\Models\Enums\CorrectionType;
 use App\Models\Enums\TaskTypeEnum;
 use App\Modules\AutomaticGrading\AutomaticGrading;
 use App\Modules\AutomaticGrading\AutomaticGradingSettings;
+use App\Modules\BuildTracking\BuildTracking;
 use App\Modules\LinkRepository\LinkRepository;
 use App\Modules\LinkRepository\LinkRepositorySettings;
 use App\Modules\MarkAsDone\MarkAsDone;
@@ -637,7 +638,7 @@ class Task extends Model
     private function newProject(User|Group|null $owner): Project
     {
 
-        if ($this->isCodeTask())
+        if ($this->isTemplateTask())
         {
             $manager = app(GitLabManager::class);
             $resultPager = new ResultPager($manager->connection());
@@ -645,7 +646,7 @@ class Task extends Model
             $projectName = $owner == null ? Str::slug("$this->name-" . Str::random(8)) : $owner->projectName;
             $project = $projects->firstWhere('name', $projectName);
 
-            abort_unless($this->module_configuration->isEnabled(Template::class), 400, 'The template module is not enabled.');
+            abort_unless($this->isTemplateTask(), 400, 'The template module is not enabled.');
             $linkRepositoryModule = $this->module_configuration->resolveModule(LinkRepository::class);
             /** @var LinkRepositorySettings $settings */
             $settings = $linkRepositoryModule->settings();
@@ -718,10 +719,10 @@ class Task extends Model
     }
 
     /**
-     * Checks if the task is a text task, by checking if the mark as done module is installed.
+     * Checks if the task is a mark-as-complete task, by checking if the mark as done module is installed.
      * @return bool
      */
-    public function isTextTask(): bool
+    public function isMarkAsCompleteTask(): bool
     {
         return $this->module_configuration->isEnabled(MarkAsDone::class);
     }
@@ -733,6 +734,24 @@ class Task extends Model
     public function isCodeTask(): bool
     {
         return $this->module_configuration->isEnabled(LinkRepository::class);
+    }
+
+    /**
+     * Checks if the task repository should be cloned when the task is started
+     * @return bool true or false whether the task should be treated as a template
+     */
+    public function isTemplateTask(): bool
+    {
+        return $this->module_configuration->isEnabled(Template::class);
+    }
+
+    /**
+     * Checks if the task has build tracking enabled
+     * @return bool true or false whether the task should be treated as a template
+     */
+    public function isTrackingBuilds(): bool
+    {
+        return $this->module_configuration->isEnabled(BuildTracking::class);
     }
 
     /**
@@ -787,4 +806,31 @@ class Task extends Model
 
         return $completedSubTaskPoints >= $pointsRequired;
     }
+
+    public function getGitlabProjectId(): int|null
+    {
+        if ( ! $this->module_configuration->isEnabled(LinkRepository::class))
+        {
+            Log::warning("LinkRepository module is not enabled.");
+
+            return null;
+        }
+        $linkRepository = $this->module_configuration->resolveModule(LinkRepository::class);
+        /**
+         * @var LinkRepositorySettings $linkRepositorySettings
+         */
+        $linkRepositorySettings = $linkRepository->settings();
+        $repo = $linkRepositorySettings->repo;
+        if ($repo == null)
+        {
+            Log::warning("This task is not linked to Gitlab project.");
+
+            return null;
+        }
+        $explodedRepoLink = explode("/", $repo);
+        $project_id = end($explodedRepoLink);
+
+        return intval($project_id);
+    }
+
 }

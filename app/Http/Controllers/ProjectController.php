@@ -92,7 +92,8 @@ class ProjectController extends Controller
 
     public function markComplete(Course $course, Task $task, Project $project): string|Response
     {
-        if( ! $task->isTextTask())
+
+        if( ! $task->isMarkAsCompleteTask())
             return response('Bad request', 400);
         if(Grade::where(['task_id' => $task->id, 'user_id' => auth()->id()])->exists())
             return response('Bad request', 400);

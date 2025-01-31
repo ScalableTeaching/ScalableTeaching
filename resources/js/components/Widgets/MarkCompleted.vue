@@ -2,7 +2,8 @@
     <div class="shadow-lg">
         <div
             class="bg-white px-4 py-6 rounded-md mt-8 dark:bg-gray-800">
-            <div v-if="this.grade === null" class="flex items-center">
+
+            <div v-if="this.project.status !== 'finished'" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                      stroke="currentColor" class="h-24 w-24 text-gray-300 dark:text-gray-400 mr-4 flex-shrink-0">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -54,7 +55,7 @@
 
 <script>
 export default {
-    props: ['grade', 'csrf', 'courseId', 'taskId', 'projectId'],
+    props: ['grade', 'csrf', 'courseId', 'taskId', 'project'],
     data: function () {
         return {
             marking: false,
@@ -66,7 +67,7 @@ export default {
             if (this.marking === true)
                 return;
             this.marking = true;
-            await axios.post(`/courses/${this.courseId}/tasks/${this.taskId}/projects/${this.projectId}/mark-complete`);
+            await axios.post(`/courses/${this.courseId}/tasks/${this.taskId}/projects/${this.project.id}/mark-complete`);
             location.reload();
         }
     },

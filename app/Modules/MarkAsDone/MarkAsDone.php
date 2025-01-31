@@ -2,8 +2,13 @@
 
 namespace App\Modules\MarkAsDone;
 
+use App\Modules\AutomaticGrading\AutomaticGrading;
+use App\Modules\BuildTracking\BuildTracking;
 use App\Modules\LinkRepository\LinkRepository;
 use App\Modules\Module;
+use App\Modules\SubtaskGradingAndFeedback\SubtaskGradingAndFeedback;
+use App\Modules\Subtasks\Subtasks;
+use App\Modules\Template\Template;
 
 class MarkAsDone extends Module
 {
@@ -15,6 +20,10 @@ class MarkAsDone extends Module
     protected string $description = "Task can be marked as done by participants. Useful for small tasks and exercises where there is no hand-in.";
 
     protected array $conflicts = [
-        LinkRepository::class,
+        AutomaticGrading::class,
+        SubtaskGradingAndFeedback::class,
+        Subtasks::class,
+        BuildTracking::class,
     ];
+
 }

@@ -33,6 +33,6 @@
 
 <script>
 export default {
-    props: ['progress', 'project']
+    props: ['progress', 'project', 'source_project_id']
 }
 </script>

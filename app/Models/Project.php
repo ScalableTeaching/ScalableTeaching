@@ -274,7 +274,7 @@ class Project extends Model
 
     public function progress(): int
     {
-        if ($this->task->isTextTask())
+        if ($this->task->isMarkAsCompleteTask())
         {
             return $this->getProgressBasedOnFinished();
         }
